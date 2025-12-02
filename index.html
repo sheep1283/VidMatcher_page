@@ -1,0 +1,720 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Appearance-Consistent Video Diffusion Personalization via Value Matching</title>
+
+    <!-- Favicon references -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <meta content="Appearance-Consistent Video Diffusion Personalization via Value Matching" name="description" />
+    <meta content="Appearance-Consistent Video Diffusion Personalization via Value Matching" property="og:title" />
+    <meta content="Appearance-Consistent Video Diffusion Personalization via Value Matching"
+        property="og:description" />
+    <meta content="Appearance-Consistent Video Diffusion Personalization via Value Matching" property="twitter:title" />
+    <meta content="Appearance-Consistent Video Diffusion Personalization via Value Matching"
+        property="twitter:description" />
+    <meta property="og:type" content="website" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Varela+Round&display=swap"
+        rel="stylesheet">
+    <link href="style.css?" rel="stylesheet" type="text/css" />
+
+    <!-- 🔎 Added minimal CSS for click‑to‑zoom lightbox -->
+    <style>
+        /* make images clearly zoomable */
+        img.zoomable {
+            cursor: zoom-in;
+            transition: transform .2s ease;
+        }
+
+        /* fullscreen overlay */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .9);
+            z-index: 10000;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        .lightbox-overlay img {
+            max-width: 95vw;
+            max-height: 95vh;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .6);
+            border-radius: 8px;
+        }
+
+        /* show zoom-out cursor while overlay is open */
+        .lightbox-overlay,
+        .lightbox-overlay * {
+            cursor: zoom-out;
+        }
+
+        /* prevent background scroll when overlay is open */
+        body.no-scroll {
+            overflow: hidden;
+        }
+    </style>
+
+    <!-- MathJax for LaTeX rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#our-approach">Our Approach</a></li>
+                    <li><a href="#motivation">Motivation</a></li>
+                    <li><a href="#qualitative-comparison">Qual. Comparison</a></li>
+                    <li><a href="#quantitative-comparison">Quan. Comparison</a></li>
+                    <li><a href="#ablation-study">Ablation Study</a></li>
+                    <li><a href="#conclusion">Conclusion</a></li>
+                    <li><a href="#citation">Citation</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero-section">
+        <div class="container">
+            <div class="title-row">
+                <div class="title-flex">
+                    <div class="title-text-block">
+                        <h1 class="title"><span class="gradient-text">Appearance-Consistent Video Diffusion
+                                Personalization<span class="title-break"></span>via Value Matching</span></h1>
+                        <h1 class="subtitle">arXiv 2025</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="base-row author-row">
+                <div class="base-col author-col">
+                    <a href="https://github.com/guu980-dev/" target="_blank" class="author-text">
+                        Hyunkoo Lee<sup>1</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://github.com/woo1726/" target="_blank" class="author-text">
+                        Wooseok Jang<sup>1</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://github.com/sheep1283" target="_blank" class="author-text">
+                        Jini Yang<sup>1</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://thwan11.github.io/" target="_blank" class="author-text">
+                        Taehwan Kim<sup>2</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://github.com/sangohkim/" target="_blank" class="author-text">
+                        Sangoh Kim<sup>1</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://successful-humor-4db.notion.site/Sangwon-Jung-70109a49767a470092a6ee0d02c78313/"
+                        target="_blank" class="author-text">
+                        Sangwon Jung<sup>1</sup>
+                    </a>
+                </div>
+                <div class="base-col author-col">
+                    <a href="https://cvlab.kaist.ac.kr/" target="_blank" class="author-text">
+                        Seungryong Kim<sup>1,†</sup>
+                    </a>
+                </div>
+            </div>
+
+            <div class="base-row author-row">
+                <div class="base-col author-col affiliations">
+                    <sup>1</sup>KAIST&nbsp;&nbsp; <sup>2</sup>Chung-Ang University &nbsp;&nbsp;
+                    <br>
+                    <sup>†</sup>Corresponding Author
+                </div>
+            </div>
+            <div class="link-labels base-row">
+                <div class="base-col icon-col"><a href="https://arxiv.org/" target="_blank" class="link-block">
+                        <i class="fa fas fa-file-text main-icon" style="font-size: 60px"></i>
+                        <strong class="link-labels-text">Paper</strong>
+                    </a></div>
+                <div class="base-col icon-col"><a href='https://github.com/cvlab-kaist/VidMatcher' class="link-block">
+                        <i class="fa fa-github main-icon" style="font-size: 60px"></i>
+                        <strong class="link-labels-text">Code</strong>
+                    </a></div>
+                <div class="base-col icon-col"><a href="#citation" class="link-block">
+                        <i class="fa fa-graduation-cap main-icon" style="font-size: 60px"></i>
+                        <strong class="link-labels-text">Citation</strong>
+                    </a></div>
+            </div>
+
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="tldr">
+                <b>TL;DR</b>: VidMatcher personalizes video generation from a reference image by matching features
+                between a reference branch and a generation branch, preserving identity while keeping motion natural and
+                prompt-aligned.
+            </div>
+
+            <div id="overview" class="base-row section">
+                <h2>Overview</h2>
+                <p class="paragraph">
+                    We introduce <strong>VidMatcher</strong>, a video personalization framework designed to generate
+                    videos of a target subject from a reference image while following a text prompt. Unlike prior
+                    approaches that rely heavily on fine-tuning yet still lose identity details, VidMatcher combines
+                    lightweight model adaptation with a cross-branch feature warping strategy. During generation, a
+                    reference branch and a generation branch run in parallel, and attention-based correspondences are
+                    used to warp reference features into the generated video, controlled by foreground and consistency
+                    masks. This approach preserves motion coherence while injecting fine-grained appearance cues,
+                    enabling more faithful and temporally stable subject-driven video generation.
+                </p>
+            </div>
+            <section id="our-approach" class="section">
+                <h2>Our approach</h2>
+                <p></p>
+                <div class="image-container">
+                    <div class="image-content">
+                        <img src="images_vidmatcher/2_architecture.png" class="img large-image" alt="Overall framework">
+                        <div class="image-caption">
+                            <p>
+                                <strong>(a)</strong>: Given a few images of the subject, <strong>VidMatcher</strong>
+                                coarsely adapt the subject's appearance to the video diffusion model utilizing LoRA.
+                            </p>
+                            <p>
+                                <strong>(b)</strong>: After coarse appearance alignment, <strong>VidMatcher</strong>
+                                further refine the appearance under parallel reference, generation branches. By
+                                utilizing token-level correspondences, reference appearance features are effectively
+                                warped and injected to the generation branch for enhancing appearance consistency.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <p>
+                    VidMatcher adopts a coarse-to-fine strategy: first, lightly adapting the model with a subject
+                    embedding and K/V/O-only LoRA to encode coarse identity; then, during inference, running a reference
+                    and generation branch in parallel and injecting fine appearance via semantic correspondence–guided
+                    value warping with masking. This design preserves temporal motion while accurately transferring
+                    high-frequency subject details.
+                </p>
+            </section>
+            <section id="motivation" class="section">
+                <h2>Motivation</h2>
+                <p class="paragraph">
+                    Text-to-video diffusion models can produce high-quality and temporally stable videos, yet they still
+                    struggle to maintain consistent subject identity when guided by reference images. While prior
+                    approaches rely on parameter updates or auxiliary training signals, they do not leverage the model’s
+                    intrinsic ability to represent semantic relationships across frames. Our observation is that
+                    transformer-based video diffusion models already encode meaningful cross-frame correspondences,
+                    suggesting that personalization can be achieved by exploiting these internal signals rather than
+                    modifying the model extensively.
+                </p>
+
+
+                <div class="slideshow-container">
+                    <div class="slideshow">
+                        <div class="slide">
+                            <img src="images_vidmatcher/4_correspondence_vis.png" class="comparison-slideshow-image"
+                                alt="Attention analysis">
+                            <div class="image-caption">Comparison of feature matching behaviors across representation
+                                types. Intermediate features fail to produce meaningful alignment, raw Query–Key
+                                features suffer from positional bias due to RoPE, and only RoPE-free Query–Key features
+                                yield accurate subject-aware correspondence suitable for feature transfer.</div>
+                        </div>
+                        <div class="slide">
+                            <img src="images_vidmatcher/1_pck_by_layer.png" class="comparison-slideshow-image"
+                                alt="Training efficiency curves">
+                            <div class="image-caption">Layer-wise correspondence evaluation. RoPE-free Query–Key
+                                features achieve the highest matching reliability, with the strongest alignment observed
+                                in mid-level transformer layers, particularly layer 12.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="slideshow-nav prev" onclick="changeSlide(-1)">❮</button>
+                    <button class="slideshow-nav next" onclick="changeSlide(1)">❯</button>
+
+                    <div class="slideshow-controls">
+                        <button class="play-pause" onclick="togglePlayPause()">
+                            <i class="fa fa-pause"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <section id="qualitative-comparison" class="section">
+                <h2>Qualitative comparison</h2>
+                <p class="paragraph"> We evaluate VidMatcher qualitatively and observe clearer identity consistency
+                    across frames, while preserving natural motion and alignment with the input prompt.
+                </p>
+<!-- 
+                <div class="video-container">
+                    <div class="video-content">
+                        <video class="slideshow-video" autoplay loop muted playsinline controls>
+                            <source src="images_vidmatcher/basket_08_s000000_e000004_warp_True.mp4" type="video/mp4">
+                        </video>
+                    </div>
+
+                    <div class="video-caption">
+                        Feature transfer visualization comparing alignment behaviors across feature space design.
+                    </div>
+                </div> -->
+
+                <div class="slideshow-container">
+                    <div class="slideshow">
+                        <div class="slide">
+                            <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
+                                <source src="images_vidmatcher/basket_08_s000000_e000004_warp_True.mp4"
+                                    type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="image-caption">Comparison of feature matching behaviors across representation
+                                types. Intermediate features fail to produce meaningful alignment, raw Query–Key
+                                features suffer from positional bias due to RoPE, and only RoPE-free Query–Key features
+                                yield accurate subject-aware correspondence suitable for feature transfer.</div>
+                        </div>
+                        <div class="slide">
+                            <img src="images_vidmatcher/1_pck_by_layer.png" class="comparison-slideshow-image"
+                                alt="Training efficiency curves">
+                            <div class="image-caption">Layer-wise correspondence evaluation. RoPE-free Query–Key
+                                features achieve the highest matching reliability, with the strongest alignment observed
+                                in mid-level transformer layers, particularly layer 12.
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="slideshow-nav prev" onclick="changeSlide(-1)">❮</button>
+                    <button class="slideshow-nav next" onclick="changeSlide(1)">❯</button>
+
+                    <div class="slideshow-controls">
+                        <button class="play-pause" onclick="togglePlayPause()">
+                            <i class="fa fa-pause"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="quantitative-comparison" class="section">
+                <h2>Quantitative comparison</h2>
+                <p class="paragraph"> We report CLIP/DINO and VBench scores to show that VidMatcher not only
+                    preserves identity effectively, but also maintains overall video quality and temporal coherence.
+                <div class="two-col">
+                    <div class="col-left">
+                        <h3>
+                            Comparison of identity preservation
+                        </h3>
+                        <p class="paragraph">
+                            VidMatcher achieves the strongest identity preservation across all baselines while
+                            maintaining comparable text alignment, and does so without large-scale
+                            finetuning—showing that efficient personalization can still deliver high visual
+                            fidelity. </p>
+                    </div>
+                    <div class="col-right-table">
+                        <table class="advantages-table">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Method</th>
+                                </tr>
+                                <tr>
+                                    <th><i>I<sub>DINO</sub></i>&uarr;</th>
+                                    <th><i>I<sub>CLIP</sub></i>&uarr;</th>
+                                    <th><i>T<sub>CLIP</sub></i>&uarr;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>DreamVideo</td>
+                                    <td>0.322</td>
+                                    <td>0.641</td>
+                                    <td>0.290</td>
+                                </tr>
+                                <tr>
+                                    <td>VideoBooth</td>
+                                    <td>0.349</td>
+                                    <td>0.634</td>
+                                    <td>0.272</td>
+                                </tr>
+                                <td>SDVG</td>
+                                <td><u>0.661</u></td>
+                                <td>0.787</td>
+                                <td>0.294</td>
+                                </tr>
+                                <td>VACE</td>
+                                <td>0.651</td>
+                                <td><u>0.796</u></td>
+                                <td><strong>0.326</strong></td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td>VidMatcher</td>
+                                    <td><strong>0.738</strong></td>
+                                    <td><strong>0.825</strong></td>
+                                    <td>0.297</td>
+                                </tr>
+                        </table>
+                        <div class="image-caption">
+                            Quantitative comparison of identity preservation, measuring similarity to the reference
+                            subject
+                            (CLIP, DINO) and adherence to the text prompt.
+                        </div>
+                    </div>
+                </div>
+                <h3>Results on VBench</h3>
+                <div class="table-container">
+                    <table class="advantages-table">
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Subject Cons. &uarr;</th>
+                                <th>Background Cons. &uarr;</th>
+                                <th>Motion Smooth. &uarr;</th>
+                                <th>Dynamic Degree &uarr;</th>
+                                <th>Aesthetic Quality &uarr;</th>
+                                <th>Imaging Quality &uarr;</th>
+                                <th>Temporal Flicker &uarr;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Training-based video personalization -->
+                            <tr class="section-row">
+                                <td colspan="8"><em>Training-based video personalization</em></td>
+                            </tr>
+                            <tr>
+                                <td>VideoBooth</td>
+                                <td>0.9143</td>
+                                <td>0.9494</td>
+                                <td>0.9649</td>
+                                <td>0.6900</td>
+                                <td>0.4483</td>
+                                <td>56.0102</td>
+                                <td>0.9550</td>
+                            </tr>
+                            <tr>
+                                <td>SVGD</td>
+                                <td>0.9811</td>
+                                <td>0.9801</td>
+                                <td>0.9922</td>
+                                <td>0.2100</td>
+                                <td>0.6498</td>
+                                <td>64.9768</td>
+                                <td>0.9889</td>
+                            </tr>
+                            <tr>
+                                <td>VACE</td>
+                                <td>0.9685</td>
+                                <td>0.9751</td>
+                                <td>0.9829</td>
+                                <td>0.4500</td>
+                                <td>0.6749</td>
+                                <td>67.8530</td>
+                                <td>0.9650</td>
+                            </tr>
+
+                            <!-- Optimization-based video personalization -->
+                            <tr class="section-row">
+                                <td colspan="8"><em>Optimization-based video personalization</em></td>
+                            </tr>
+                            <tr>
+                                <td>DreamVideo</td>
+                                <td>0.9591</td>
+                                <td><strong>0.9766</strong></td>
+                                <td>0.9734</td>
+                                <td>0.1400</td>
+                                <td>0.5111</td>
+                                <td>62.4017</td>
+                                <td>0.9630</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>VidMatcher</td>
+                                <td><strong>0.9866</strong></td>
+                                <td>0.9750</td>
+                                <td><strong>0.9866</strong></td>
+                                <td><strong>0.5100</strong></td>
+                                <td><strong>0.6074</strong></td>
+                                <td><strong>70.6617</strong></td>
+                                <td><strong>0.9774</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="image-caption"> VBench evaluation showing that VidMatcher delivers the strongest
+                        subject consistency and imaging quality, while maintaining competitive motion stability and
+                        perceptual scores without large-scale video training.</p>
+                </div>
+                <p class="paragraph">
+                    VidMatcher outperforms prior optimization-based methods across nearly all metrics and matches or
+                    exceeds training-based approaches in subject consistency and image quality, without requiring
+                    large-scale video finetuning.
+                </p>
+            </section>
+            <div class="two-col">
+
+            </div>
+
+
+            <section id="ablation-study" class="section">
+                <h2>Ablation study</h2>
+                <div class="two-col">
+                    <div class="col-left">
+                        <h3>Component-level evaluation</h3>
+                        <p class="paragraph">
+                            The ablation compares coarse adaptation, value warping, and masked warping. Coarse
+                            adaptation offers a stable baseline but misses fine details. Value warping restores detailed
+                            appearance, though sometimes introduces artifacts. Masking filters unreliable transfers,
+                            yielding the best balance between identity fidelity and text alignment.
+                    </div>
+                    <div class="col-right-table">
+                        <table class="advantages-table">
+                            <thead>
+                                <tr>
+                                    <th>Component</th>
+                                    <th><i>I<sub>DINO</sub></i>&uarr;</th>
+                                    <th><i>I<sub>CLIP</sub></i>&uarr;</th>
+                                    <th><i>T<sub>CLIP</sub></i>&uarr;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>(I) Coarse Appearance Adaptation</td>
+                                    <td>0.645</td>
+                                    <td>0.791</td>
+                                    <td>0.320</td>
+                                </tr>
+                                <tr>
+                                    <td>(II) (I)+Value Warping</td>
+                                    <td>0.701</td>
+                                    <td>0.809</td>
+                                    <td>0.278</td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td>(III) (II)+Masking <strong>(VidMatcher)</strong></td>
+                                    <td><strong>0.656</strong></td>
+                                    <td><strong>0.806</strong></td>
+                                    <td><strong>0.320</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="image-caption">
+                            Component analysis showing that adding value warping improves identity fidelity, while
+                            masking restores stability and text consistency, resulting in the best overall balance.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="conclusion" class="section">
+                <h2>Conclusion</h2>
+
+                <p class="paragraph">
+                    VidMatcher tackles video personalization by combining lightweight model adaptation with
+                    correspondence-guided appearance transfer. Instead of relying solely on fine-tuning, it matches
+                    reference and generated features during denoising and selectively injects appearance information
+                    using warping and masking. This design preserves motion while maintaining fine identity details,
+                    achieving better consistency than prior methods.
+                </p>
+            </section>
+
+            <div class="citation add-top-padding">
+                <h1 id="citation">Citation</h1>
+                <p> If you use this work or find it helpful, please consider citing: </p>
+                <pre id="codecell0">
+                </pre>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p class="credit">Credit: The design of this project page is inspired by previous academic project pages,
+                such as <a href="https://llm-grounded-diffusion.github.io/" target="_blank">LLM-grounded Diffusion</a>,
+                <a href="https://describe-anything.github.io/" target="_blank">Describe-anything</a>, and <a
+                    href="https://cvlab-kaist.github.io/VIRAL/" target="_blank">VIRAL</a>.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMute(element) {
+            const video = element.parentElement.querySelector('video');
+            const icon = element.querySelector('i');
+            const text = element.querySelector('.unmute-text');
+
+            if (video.muted) {
+                video.muted = false;
+                icon.className = 'fa fa-volume-up';
+                text.textContent = 'Mute';
+            } else {
+                video.muted = true;
+                icon.className = 'fa fa-volume-off';
+                text.textContent = 'Click to unmute';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const videos = document.querySelectorAll('video');
+            videos.forEach(video => {
+                video.addEventListener('play', function () {
+                    const overlay = this.parentElement.querySelector('.unmute-overlay');
+                    if (overlay) overlay.style.opacity = '0.8';
+                });
+
+                video.addEventListener('pause', function () {
+                    const overlay = this.parentElement.querySelector('.unmute-overlay');
+                    if (overlay) overlay.style.opacity = '0.8';
+                });
+            });
+
+            // Initialize all slideshows
+            document.querySelectorAll('.slideshow-container').forEach(container => {
+                const slideshow = container.querySelector('.slideshow');
+                const slides = slideshow.querySelectorAll('.slide');
+                const prevButton = container.querySelector('.slideshow-nav.prev');
+                const nextButton = container.querySelector('.slideshow-nav.next');
+                const playPauseButton = container.querySelector('.play-pause');
+
+                let currentSlide = 0;
+                let autoplayInterval;
+                let isPlaying = true;
+
+                function showSlide(n) {
+                    slides.forEach(slide => slide.classList.remove('active'));
+                    currentSlide = (n + slides.length) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }
+
+                function changeSlide(n) {
+                    showSlide(currentSlide + n);
+                    resetAutoplay();
+                }
+
+                function togglePlayPause() {
+                    if (isPlaying) {
+                        clearInterval(autoplayInterval);
+                        playPauseButton.innerHTML = '<i class="fa fa-play"></i>';
+                    } else {
+                        startAutoplay();
+                        playPauseButton.innerHTML = '<i class="fa fa-pause"></i>';
+                    }
+                    isPlaying = !isPlaying;
+                }
+
+                function startAutoplay() {
+                    autoplayInterval = setInterval(() => {
+                        showSlide(currentSlide + 1);
+                    }, 5000);
+                }
+
+                function resetAutoplay() {
+                    clearInterval(autoplayInterval);
+                    if (isPlaying) {
+                        startAutoplay();
+                    }
+                }
+
+                // Initialize this slideshow
+                showSlide(0);
+                startAutoplay();
+
+                // Add event listeners
+                prevButton.addEventListener('click', () => changeSlide(-1));
+                nextButton.addEventListener('click', () => changeSlide(1));
+                playPauseButton.addEventListener('click', togglePlayPause);
+            });
+
+            // Handle main video play button
+            const mainVideo = document.querySelector('.main-video');
+            const playButton = document.querySelector('.play-button-overlay');
+
+            if (mainVideo && playButton) {
+                // Click play button to play video
+                playButton.addEventListener('click', () => {
+                    mainVideo.play();
+                    mainVideo.classList.add('playing');
+                });
+
+                // Handle video play/pause events
+                mainVideo.addEventListener('play', () => {
+                    mainVideo.classList.add('playing');
+                });
+
+                mainVideo.addEventListener('pause', () => {
+                    mainVideo.classList.remove('playing');
+                });
+
+                mainVideo.addEventListener('ended', () => {
+                    mainVideo.classList.remove('playing');
+                });
+            }
+
+            // -----------------------------
+            // 🖼️ Click-to-zoom Lightbox
+            // -----------------------------
+            // Build overlay once
+            const lightbox = document.createElement('div');
+            lightbox.className = 'lightbox-overlay';
+            lightbox.setAttribute('role', 'dialog');
+            lightbox.setAttribute('aria-modal', 'true');
+            lightbox.innerHTML = '<img alt="Expanded image">';
+            document.body.appendChild(lightbox);
+            const lightboxImg = lightbox.querySelector('img');
+
+            function openLightbox(src, alt) {
+                lightboxImg.src = src;
+                lightboxImg.alt = alt || '';
+                lightbox.classList.add('active');
+                document.body.classList.add('no-scroll');
+            }
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+                lightboxImg.src = '';
+            }
+
+            // Close on click anywhere or on Esc
+            lightbox.addEventListener('click', closeLightbox);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox();
+            });
+
+            // Mark target images as zoomable and wire up click
+            const zoomableImages = document.querySelectorAll('.image-container img, .slideshow img, .main-content img.img, .hero-section img.img');
+            zoomableImages.forEach(img => {
+                img.classList.add('zoomable');
+                img.addEventListener('click', () => {
+                    // support optional high-res source via data-fullsrc
+                    const src = img.getAttribute('data-fullsrc') || img.currentSrc || img.src;
+                    openLightbox(src, img.alt);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
