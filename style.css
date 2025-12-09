@@ -652,15 +652,27 @@ pre {
 }
 
 .comparison-slideshow-image {
-    max-width: 850px;
     width: 100%;
-    height: 350px;
-    margin: 0 auto;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
     border-radius: 8px;
     display: block;
-    margin-bottom: 15px;
-    /* padding: 1rem 0.5rem; */
+}
+
+/* Video-specific slideshow styles */
+.video-slideshow-container .slideshow {
+    height: 600px;
+}
+
+.video-slideshow-container .slide {
+    padding: 0;
+    justify-content: center;
+}
+
+.video-slideshow-container .comparison-slideshow-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .slideshow-nav {
