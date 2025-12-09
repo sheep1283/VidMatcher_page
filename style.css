@@ -426,14 +426,14 @@ pre {
 }
 
 .nav-links li {
-  margin: 0 15px;
+  margin: 0 10px;
 }
 
 .nav-links a {
   color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   transition: color 0.3s ease;
   position: relative;
 }
@@ -971,8 +971,8 @@ pre {
   .title-text-block .title { font-size: 1.85rem; text-align: center; }
   .title-text-block .subtitle { font-size: 1.05rem; text-align: center; }
   .author-text { font-size: 1.05rem; }
-  .nav-links a { font-size: 0.95rem; }
-  .nav-links li { margin: 0 8px 6px; }
+  .nav-links a { font-size: 0.85rem; }
+  .nav-links li { margin: 0 6px 6px; }
 }
 @media (max-width: 500px) {
   .title-video { height: 4.8rem; width: 5.6rem; margin-top: 0; }
@@ -980,14 +980,16 @@ pre {
   .title-text-block .title { font-size: 1.5rem; text-align: center; }
   .title-text-block .subtitle { font-size: 0.95rem; text-align: center; }
   .author-text { font-size: 0.95rem; }
-  .nav-links a { font-size: 0.85rem; }
+  .nav-links a { font-size: 0.75rem; }
+  .nav-links li { margin: 0 4px 6px; }
   .site-header { padding: 6px 0; }
 }
 @media (max-width: 400px) {
   .title-video { height: 4.2rem; width: 5rem; }
   .title-text-block .title { font-size: 1.5rem; }
   .author-text { font-size: 0.9rem; }
-  .nav-links a { font-size: 0.8rem; }
+  .nav-links a { font-size: 0.7rem; }
+  .nav-links li { margin: 0 3px 4px; }
 }
 
 /* Two-column layout for framework section */
