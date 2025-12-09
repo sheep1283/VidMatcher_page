@@ -661,7 +661,7 @@ pre {
 
 /* Video-specific slideshow styles */
 .video-slideshow-container .slideshow {
-    height: 600px;
+    height: 650px;
 }
 
 .video-slideshow-container .slide {
@@ -672,7 +672,7 @@ pre {
 .video-slideshow-container .comparison-slideshow-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .slideshow-nav {
