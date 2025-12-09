@@ -101,7 +101,7 @@
                 </ul>
             </nav>
         </div>
-    </header>
+    </header>T
 
     <div class="hero-section">
         <div class="container">
@@ -180,9 +180,9 @@
     <main class="main-content">
         <div class="container">
             <div class="tldr">
-                <b>TL;DR</b>: VidMatcher personalizes video generation from a reference image by matching features
-                between a reference branch and a generation branch, preserving identity while keeping motion natural and
-                prompt-aligned.
+                <b>TL;DR</b>: VidMatcher personalizes video generation by injecting fine appearance
+                through semantic correspondence–guided value warping,
+                achieving faithful identity while keeping motion natural and prompts aligned.
             </div>
 
             <section id="teaser" class="section">
@@ -236,14 +236,15 @@
             <div id="overview" class="base-row section">
                 <h2>Overview</h2>
                 <p class="paragraph">
-                    We introduce <strong>VidMatcher</strong>, a video personalization framework designed to generate
-                    videos of a target subject from a reference image while following a text prompt. Unlike prior
-                    approaches that rely heavily on fine-tuning yet still lose identity details, VidMatcher combines
-                    lightweight model adaptation with a cross-branch feature warping strategy. During generation, a
-                    reference branch and a generation branch run in parallel, and attention-based correspondences are
-                    used to warp reference features into the generated video, controlled by foreground and consistency
-                    masks. This approach preserves motion coherence while injecting fine-grained appearance cues,
-                    enabling more faithful and temporally stable subject-driven video generation.
+                    We introduce <strong>VidMatcher</strong>, a video personalization framework that generates
+                    subject-accurate videos from a reference image while following a text prompt. Unlike prior
+                    methods that rely on heavy video finetuning and still struggle with identity drift, VidMatcher
+                    uses a coarse-to-fine strategy combining lightweight image-based adaptation with a fully
+                    training-free refinement stage. During generation, we compute semantic correspondences using
+                    RoPE-free mid-level attention features and warp appearance-rich value features into
+                    semantically matched regions of the video, guided by reliability masks. This design injects
+                    fine-grained appearance details without disturbing the model’s temporal prior, enabling more
+                    faithful, consistent, and motion-stable subject-driven video generation.
                 </p>
             </div>
             <section id="our-approach" class="section">
@@ -267,23 +268,25 @@
                     </div>
                 </div>
                 <p>
-                    VidMatcher adopts a coarse-to-fine strategy: first, lightly adapting the model with a subject
-                    embedding and K/V/O-only LoRA to encode coarse identity; then, during inference, running a reference
-                    and generation branch in parallel and injecting fine appearance via semantic correspondence–guided
-                    value warping with masking. This design preserves temporal motion while accurately transferring
-                    high-frequency subject details.
+                    VidMatcher adopts a coarse-to-fine strategy: first, it lightly adapts the model using LoRA
+                    and a learnable subject embedding to encode coarse identity from a few reference images.
+                    During inference, the model enhances fine-grained appearance through a training-free
+                    refinement stage that computes semantic correspondences from RoPE-free mid-level attention
+                    features and injects appearance-rich value features into matched regions via masking. This
+                    design preserves the model’s temporal prior while accurately transferring high-frequency
+                    subject details.
                 </p>
             </section>
             <section id="motivation" class="section">
                 <h2>Motivation</h2>
                 <p class="paragraph">
-                    Text-to-video diffusion models can produce high-quality and temporally stable videos, yet they still
-                    struggle to maintain consistent subject identity when guided by reference images. While prior
-                    approaches rely on parameter updates or auxiliary training signals, they do not leverage the model’s
-                    intrinsic ability to represent semantic relationships across frames. Our observation is that
-                    transformer-based video diffusion models already encode meaningful cross-frame correspondences,
-                    suggesting that personalization can be achieved by exploiting these internal signals rather than
-                    modifying the model extensively.
+                    Text-to-video diffusion models produce high-quality and temporally stable videos but still
+                    struggle to preserve fine-grained subject identity. Prior methods rely on finetuning or
+                    auxiliary supervision, overlooking the model’s intrinsic semantic structure. Our analysis
+                    shows that transformer-based video diffusion models encode strong semantic correspondences
+                    in their mid-level attention features, especially when RoPE is removed. This indicates that
+                    effective personalization can be achieved by leveraging these internal signals rather than
+                    extensively modifying the model.
                 </p>
 
 
@@ -319,8 +322,7 @@
             </section>
             <section id="qualitative-comparison" class="section">
                 <h2>Qualitative comparison</h2>
-                <p class="paragraph"> We evaluate VidMatcher qualitatively and observe clearer identity consistency
-                    across frames, while preserving natural motion and alignment with the input prompt.
+                <p class="paragraph"> We qualitatively compare VidMatcher with DreamVideo, VideoBooth, SDVG, and VACE, and observe consistently stronger identity preservation across frames while maintaining natural motion and prompt alignment.
                 </p>
 <!-- 
                 <div class="video-container">
@@ -398,7 +400,7 @@
                         </h3>
                         <p class="paragraph">
                             VidMatcher achieves the strongest identity preservation across all baselines while
-                            maintaining comparable text alignment, and does so without large-scale
+                            maintaining comparable text alignment, and does so without large-scale video
                             finetuning—showing that efficient personalization can still deliver high visual
                             fidelity. </p>
                     </div>
@@ -598,11 +600,12 @@
                 <h2>Conclusion</h2>
 
                 <p class="paragraph">
-                    VidMatcher tackles video personalization by combining lightweight model adaptation with
-                    correspondence-guided appearance transfer. Instead of relying solely on fine-tuning, it matches
-                    reference and generated features during denoising and selectively injects appearance information
-                    using warping and masking. This design preserves motion while maintaining fine identity details,
-                    achieving better consistency than prior methods.
+                    VidMatcher tackles video personalization by combining lightweight image-based adaptation with
+                    correspondence-guided appearance injection. Rather than depending on heavy video finetuning, it
+                    leverages RoPE-free mid-level attention features to compute semantic correspondences during
+                    denoising and injects fine appearance via masked value warping. This coarse-to-fine design
+                    preserves temporal motion while reinforcing high-frequency identity details, yielding more
+                    faithful and consistent results than prior methods.
                 </p>
             </section>
 
