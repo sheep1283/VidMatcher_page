@@ -163,7 +163,7 @@
                         <i class="fa fas fa-file-text main-icon" style="font-size: 60px"></i>
                         <strong class="link-labels-text">Paper</strong>
                     </a></div>
-                <div class="base-col icon-col"><a href='https://github.com/cvlab-kaist/VidMatcher' class="link-block">
+                <div class="base-col icon-col"><a href='https://github.com/cvlab-kaist/V-Warper' class="link-block">
                         <i class="fa fa-github main-icon" style="font-size: 60px"></i>
                         <strong class="link-labels-text">Code</strong>
                     </a></div>
@@ -179,7 +179,7 @@
     <main class="main-content">
         <div class="container">
             <div class="tldr">
-                <b>TL;DR</b>: VidMatcher personalizes video generation by injecting fine appearance
+                <b>TL;DR</b>: V-Warper personalizes video generation by injecting fine appearance
                 through semantic correspondence–guided value warping,
                 achieving faithful identity while keeping motion natural and prompts aligned.
             </div>
@@ -191,31 +191,31 @@
                     <div class="slideshow">
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/teaser/1.mp4" type="video/mp4">
+                                <source src="videos/teaser/1.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/teaser/2.mp4" type="video/mp4">
+                                <source src="videos/teaser/2.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/teaser/3.mp4" type="video/mp4">
+                                <source src="videos/teaser/3.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/teaser/4.mp4" type="video/mp4">
+                                <source src="videos/teaser/4.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/teaser/5.mp4" type="video/mp4">
+                                <source src="videos/teaser/5.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
@@ -235,9 +235,9 @@
             <div id="overview" class="base-row section">
                 <h2>Overview</h2>
                 <p class="paragraph">
-                    We introduce <strong>VidMatcher</strong>, a video personalization framework that generates
+                    We introduce <strong>V-Warper</strong>, a video personalization framework that generates
                     subject-accurate videos from a reference image while following a text prompt. Unlike prior
-                    methods that rely on heavy video finetuning and still struggle with identity drift, VidMatcher
+                    methods that rely on heavy video finetuning and still struggle with identity drift, V-Warper
                     uses a coarse-to-fine strategy combining lightweight image-based adaptation with a fully
                     training-free refinement stage. During generation, we compute semantic correspondences using
                     RoPE-free mid-level attention features and warp appearance-rich value features into
@@ -251,14 +251,14 @@
                 <p></p>
                 <div class="image-container">
                     <div class="image-content">
-                        <img src="images_vidmatcher/2_architecture.png" class="img large-image" alt="Overall framework">
+                        <img src="images/2_architecture.png" class="img large-image" alt="Overall framework">
                         <div class="image-caption">
                             <p>
-                                <strong>(a)</strong>: Given a few images of the subject, <strong>VidMatcher</strong>
+                                <strong>(a)</strong>: Given a few images of the subject, <strong>V-Warper</strong>
                                 coarsely adapt the subject's appearance to the video diffusion model utilizing LoRA.
                             </p>
                             <p>
-                                <strong>(b)</strong>: After coarse appearance alignment, <strong>VidMatcher</strong>
+                                <strong>(b)</strong>: After coarse appearance alignment, <strong>V-Warper</strong>
                                 further refine the appearance under parallel reference, generation branches. By
                                 utilizing token-level correspondences, reference appearance features are effectively
                                 warped and injected to the generation branch for enhancing appearance consistency.
@@ -267,7 +267,7 @@
                     </div>
                 </div>
                 <p>
-                    VidMatcher adopts a coarse-to-fine strategy: first, it lightly adapts the model using LoRA
+                    V-Warper adopts a coarse-to-fine strategy: first, it lightly adapts the model using LoRA
                     and a learnable subject embedding to encode coarse identity from a few reference images.
                     During inference, the model enhances fine-grained appearance through a training-free
                     refinement stage that computes semantic correspondences from RoPE-free mid-level attention
@@ -292,7 +292,7 @@
                 <div class="slideshow-container">
                     <div class="slideshow">
                         <div class="slide">
-                            <img src="images_vidmatcher/4_correspondence_vis.png" class="slideshow-image"
+                            <img src="images/4_correspondence_vis.png" class="slideshow-image"
                                 alt="Attention analysis">
                             <div class="image-caption">Comparison of feature matching behaviors across representation
                                 types. Intermediate features fail to produce meaningful alignment, raw Query–Key
@@ -300,7 +300,7 @@
                                 yield accurate subject-aware correspondence suitable for feature transfer.</div>
                         </div>
                         <div class="slide">
-                            <img src="images_vidmatcher/1_pck_by_layer.png" class="slideshow-image"
+                            <img src="images/1_pck_by_layer.png" class="slideshow-image"
                                 alt="Training efficiency curves">
                             <div class="image-caption">Layer-wise correspondence evaluation. RoPE-free Query–Key
                                 features achieve the highest matching reliability, with the strongest alignment observed
@@ -321,13 +321,13 @@
             </section>
             <section id="qualitative-comparison" class="section">
                 <h2>Qualitative comparison</h2>
-                <p class="paragraph"> We qualitatively compare VidMatcher with DreamVideo, VideoBooth, SDVG, and VACE, and observe consistently stronger identity preservation across frames while maintaining natural motion and prompt alignment.
+                <p class="paragraph"> We qualitatively compare V-Warper with DreamVideo, VideoBooth, SDVG, and VACE, and observe consistently stronger identity preservation across frames while maintaining natural motion and prompt alignment.
                 </p>
 <!-- 
                 <div class="video-container">
                     <div class="video-content">
                         <video class="slideshow-video" autoplay loop muted playsinline controls>
-                            <source src="images_vidmatcher/basket_08_s000000_e000004_warp_True.mp4" type="video/mp4">
+                            <source src="images_V-Warper/basket_08_s000000_e000004_warp_True.mp4" type="video/mp4">
                         </video>
                     </div>
 
@@ -340,37 +340,37 @@
                     <div class="slideshow">
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/1.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/1.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/2.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/2.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/3.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/3.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/4.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/4.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/5.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/5.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
                         <div class="slide">
                             <video class="comparison-slideshow-image" autoplay loop muted playsinline controls>
-                                <source src="videos_vidmatcer/baseline_comparison/6.mp4" type="video/mp4">
+                                <source src="videos/baseline_comparison/6.mp4" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
@@ -390,7 +390,7 @@
 
             <section id="quantitative-comparison" class="section">
                 <h2>Quantitative comparison</h2>
-                <p class="paragraph"> We report CLIP/DINO and VBench scores to show that VidMatcher not only
+                <p class="paragraph"> We report CLIP/DINO and VBench scores to show that V-Warper not only
                     preserves identity effectively, but also maintains overall video quality and temporal coherence.
                 <div class="two-col">
                     <div class="col-left">
@@ -398,7 +398,7 @@
                             Comparison of identity preservation
                         </h3>
                         <p class="paragraph">
-                            VidMatcher achieves the strongest identity preservation across all baselines while
+                            V-Warper achieves the strongest identity preservation across all baselines while
                             maintaining comparable text alignment, and does so without large-scale video
                             finetuning—showing that efficient personalization can still deliver high visual
                             fidelity. </p>
@@ -439,7 +439,7 @@
                                 <td><strong>0.326</strong></td>
                                 </tr>
                                 <tr class="highlight-row">
-                                    <td>VidMatcher</td>
+                                    <td>V-Warper</td>
                                     <td><strong>0.738</strong></td>
                                     <td><strong>0.825</strong></td>
                                     <td>0.297</td>
@@ -518,7 +518,7 @@
                                 <td>0.9630</td>
                             </tr>
                             <tr class="highlight-row">
-                                <td>VidMatcher</td>
+                                <td>V-Warper</td>
                                 <td><strong>0.9866</strong></td>
                                 <td>0.9750</td>
                                 <td><strong>0.9866</strong></td>
@@ -529,12 +529,12 @@
                             </tr>
                         </tbody>
                     </table>
-                    <p class="image-caption"> VBench evaluation showing that VidMatcher delivers the strongest
+                    <p class="image-caption"> VBench evaluation showing that V-Warper delivers the strongest
                         subject consistency and imaging quality, while maintaining competitive motion stability and
                         perceptual scores without large-scale video training.</p>
                 </div>
                 <p class="paragraph">
-                    VidMatcher outperforms prior optimization-based methods across nearly all metrics and matches or
+                    V-Warper outperforms prior optimization-based methods across nearly all metrics and matches or
                     exceeds training-based approaches in subject consistency and image quality, without requiring
                     large-scale video finetuning.
                 </p>
@@ -579,7 +579,7 @@
                                     <td>0.278</td>
                                 </tr>
                                 <tr class="highlight-row">
-                                    <td>(III) (II)+Masking <strong>(VidMatcher)</strong></td>
+                                    <td>(III) (II)+Masking <strong>(V-Warper)</strong></td>
                                     <td><strong>0.656</strong></td>
                                     <td><strong>0.806</strong></td>
                                     <td><strong>0.320</strong></td>
@@ -599,7 +599,7 @@
                 <h2>Conclusion</h2>
 
                 <p class="paragraph">
-                    VidMatcher tackles video personalization by combining lightweight image-based adaptation with
+                    V-Warper tackles video personalization by combining lightweight image-based adaptation with
                     correspondence-guided appearance injection. Rather than depending on heavy video finetuning, it
                     leverages RoPE-free mid-level attention features to compute semantic correspondences during
                     denoising and injects fine appearance via masked value warping. This coarse-to-fine design
